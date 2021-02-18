@@ -7,6 +7,12 @@ public class VoxelData
     public static readonly int ChunkWidth = 5;
     public static readonly int ChunkHeight = 15;
 
+    public static readonly int TextureAtlasSizeInBlocks = 4;
+    public static float NormalizedBlockTextureSize
+    {
+        get { return 1f / (float)TextureAtlasSizeInBlocks; }
+    }
+
     public static readonly Vector3[] voxelVertices = new Vector3[8]
     {
         new Vector3(0.0f,0.0f,0.0f),
@@ -17,16 +23,6 @@ public class VoxelData
         new Vector3(1.0f,0.0f,1.0f),
         new Vector3(1.0f,1.0f,1.0f),
         new Vector3(0.0f,1.0f,1.0f)
-    };
-
-    public static readonly Vector3[] faceChecks = new Vector3[6]
-    {
-        Vector3.back,
-        Vector3.forward,
-        Vector3.up,
-        Vector3.down,
-        Vector3.left,
-        Vector3.right
     };
 
     public static readonly int[,] voxelTriangles = new int[6, 4]
@@ -47,6 +43,20 @@ public class VoxelData
         {1,5,0,4},  // Bottom Face
         {4,7,0,3},  // Left Face
         {1,2,5,6}   // Right Face
+    };
+
+    public static readonly Vector3[] faceChecks = new Vector3[6]
+    {
+        // This order is important; it corresponds to the order that the faces were constructed
+        // in the previous array (back for the back face, forward for the front face, etc.)
+        // Vector3 shorthand properties are used here, but they correspond to offset locations
+        // either 1 or -1 in each of the three axes.
+        Vector3.back,       // -1 Z
+        Vector3.forward,    // 1 Z
+        Vector3.up,         // 1 Y
+        Vector3.down,       // -1 Y
+        Vector3.left,       // -1 X
+        Vector3.right       // 1 X
     };
 
     public static readonly Vector2[] voxelUVs = new Vector2[4]
