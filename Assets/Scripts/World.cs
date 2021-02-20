@@ -22,7 +22,7 @@ public class World : MonoBehaviour
     {
         Random.InitState(seed);
 
-        spawnLocation = new Vector3((VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f, VoxelData.ChunkHeight + 2, (VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f);
+        spawnLocation = new Vector3((VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f, VoxelData.ChunkHeight - 50f, (VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f);
         GenerateWorld();
         playerLastChunkCoord = getChunkCoordFromVector3(player.position);
     }
@@ -31,8 +31,8 @@ public class World : MonoBehaviour
     {
         playerChunkCoord = getChunkCoordFromVector3(player.position);
 
-        if(!playerChunkCoord.Equals(playerLastChunkCoord))
-            CheckViewDistance();
+        //if(!playerChunkCoord.Equals(playerLastChunkCoord))
+        //    CheckViewDistance();
     }
 
     void GenerateWorld()
@@ -93,6 +93,21 @@ public class World : MonoBehaviour
         activeChunks.Add(new ChunkCoord(x, z));
     }
 
+    public bool CheckForVoxel(float _x, float _y, float _z)
+    {
+        int xCheck = Mathf.FloorToInt(_x);
+        int yCheck = Mathf.FloorToInt(_y);
+        int zCheck = Mathf.FloorToInt(_z);
+
+        int xChunk = xCheck / VoxelData.ChunkWidth;
+        int zChunk = zCheck / VoxelData.ChunkWidth;
+
+        xCheck -= (xChunk * VoxelData.ChunkWidth);
+        zCheck -= (zChunk * VoxelData.ChunkWidth);
+
+        return blocktypes[chunks[xChunk, zChunk].voxelMap[xCheck, yCheck, zCheck]].isSolid;
+    }
+
     public byte GetVoxel(Vector3 pos)
     {
         int yPos = Mathf.FloorToInt(pos.y);
@@ -131,22 +146,6 @@ public class World : MonoBehaviour
         }
         
         return voxelValue;
-
-
-        /*
-        if (pos.y < 1)
-           return 1;
-        else if (pos.y == VoxelData.ChunkHeight - 1)
-        {
-            float tempNoise = Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, 0.1f);
-            if (tempNoise < 0.5f)
-                return 3;
-            else
-                return 4;
-        }
-        else
-           return 2;
-        */
     }
 
     bool IsChunkInWorld(ChunkCoord coord)
